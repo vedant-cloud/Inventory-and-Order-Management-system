@@ -1,6 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from typing import List
 import models, schemas
 from database import engine, get_db, Base
@@ -18,6 +20,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ==========================================
+# GLOBAL ERROR HANDLERS
+# ==========================================
+
+# 1. Catch Database Integrity Errors (e.g., foreign key failures)
+@app.exception_handler(IntegrityError)
+async def integrity_error_handler(request: Request, exc: IntegrityError):
+    return JSONResponse(
+        status_code=status.HTTP_409_CONFLICT,
+        content={"detail": "Database conflict. This action violates a database constraint."}
+    )
+
+# 2. Catch All Unhandled Server Errors
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    # In a production app, you would log 'exc' to a monitoring service here
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": "An unexpected server error occurred. Please try again later."}
+    )
 # ================= PRODUCTS =================
 
 @app.post("/products", response_model=schemas.ProductResponse, status_code=status.HTTP_201_CREATED)
