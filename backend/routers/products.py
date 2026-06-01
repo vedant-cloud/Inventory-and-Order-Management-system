@@ -39,6 +39,16 @@ def update_product(id: int, req: schemas.ProductCreate, db: Session = Depends(ge
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(id: int, db: Session = Depends(get_db)):
     product = db.query(models.Product).filter(models.Product.id == id).first()
-    if not product: raise HTTPException(status_code=404, detail="Product not found")
+    if not product: 
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    # NEW: Check if the product is tied to any active orders
+    existing_order = db.query(models.Order).filter(models.Order.product_id == id).first()
+    if existing_order:
+        raise HTTPException(
+            status_code=400, 
+            detail="Cannot delete product because it has active orders. Please cancel the orders first."
+        )
+
     db.delete(product)
     db.commit()

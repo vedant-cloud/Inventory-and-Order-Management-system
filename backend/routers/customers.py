@@ -46,6 +46,16 @@ def update_customer(id: int, req: schemas.CustomerCreate, db: Session = Depends(
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_customer(id: int, db: Session = Depends(get_db)):
     customer = db.query(models.Customer).filter(models.Customer.id == id).first()
-    if not customer: raise HTTPException(status_code=404, detail="Customer not found")
+    if not customer: 
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    # NEW: Check if the customer has any active orders
+    existing_order = db.query(models.Order).filter(models.Order.customer_id == id).first()
+    if existing_order:
+        raise HTTPException(
+            status_code=400, 
+            detail="Cannot delete customer because they have active orders. Please cancel their orders first."
+        )
+
     db.delete(customer)
     db.commit()

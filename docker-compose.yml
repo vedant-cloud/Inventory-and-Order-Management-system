@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:15-alpine
+    restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -17,20 +18,19 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
-    volumes:
-      - ./backend:/app 
+    # Removed the local ./backend volume mount for production parity
     depends_on:
       - db
 
   frontend:
     build: ./frontend
+    restart: always
     ports:
-      - "5173:5173"
+      # Maps local port 5173 to the Nginx port 80 inside the container
+      - "5173:80"
     environment:
       - VITE_API_URL=${VITE_API_URL}
-    volumes:
-      - ./frontend:/app 
-      - /app/node_modules 
+    # Removed local volume mounts so it serves the Nginx build
     depends_on:
       - backend
 
