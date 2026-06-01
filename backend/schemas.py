@@ -1,37 +1,54 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr
 
-# --- PRODUCTS ---
+# ========================
+# PRODUCT SCHEMAS
+# ==========================
 class ProductBase(BaseModel):
     name: str
     sku: str
-    price: float = Field(..., gt=0) # Price must be > 0
-    quantity: int = Field(default=0, ge=0) # Quantity cannot be negative
+    price: float
+    quantity: int
 
-class ProductCreate(ProductBase): pass
+class ProductCreate(ProductBase):
+    pass
 
 class ProductResponse(ProductBase):
     id: int
-    class Config: from_attributes = True
+    
+    class Config:
+        from_attributes = True
 
-# --- CUSTOMERS ---
+# =========================
+# CUSTOMER SCHEMAS
+# =========================
 class CustomerBase(BaseModel):
     full_name: str
-    email: EmailStr # Automatically validates standard email format
+    email: EmailStr
     phone_number: str
 
-class CustomerCreate(CustomerBase): pass
+class CustomerCreate(CustomerBase):
+    pass
 
 class CustomerResponse(CustomerBase):
     id: int
-    class Config: from_attributes = True
+    
+    class Config:
+        from_attributes = True
 
-# --- ORDERS ---
-class OrderCreate(BaseModel):
+# ========================
+# ORDER SCHEMAS
+# ========================
+class OrderBase(BaseModel):
     customer_id: int
     product_id: int
-    quantity: int = Field(..., gt=0) # Must order at least 1 item
+    quantity: int
 
-class OrderResponse(OrderCreate):
+class OrderCreate(OrderBase):
+    pass
+
+class OrderResponse(OrderBase):
     id: int
     total_amount: float
-    class Config: from_attributes = True
+    
+    class Config:
+        from_attributes = True

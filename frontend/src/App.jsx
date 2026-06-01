@@ -3,7 +3,7 @@ import { ToastProvider } from './context/ToastContext.jsx';
 import Navbar from './components/Navbar.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Products from './pages/Products.jsx';
-
+import Customers from './pages/Customers.jsx';
 function App() {
   return (
     <ToastProvider>
@@ -13,7 +13,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/customers" element={<h2 className="text-3xl font-bold">Customers (Coming Soon)</h2>} />
+            <Route path="/customers" element={<Customers />} />
             <Route path="/orders" element={<h2 className="text-3xl font-bold">Orders (Coming Soon)</h2>} />
           </Routes>
         </main>

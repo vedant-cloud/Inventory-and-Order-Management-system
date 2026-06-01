@@ -6,7 +6,8 @@ from database import get_db
 
 router = APIRouter()
 
-@router.post("", response_model=schemas.ProductResponse, status_code=status.HTTP_201_CREATED)
+# Notice: "" instead of "/"
+@router.post("", response_model=schemas.OrderResponse, status_code=status.HTTP_201_CREATED)
 def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
     customer = db.query(models.Customer).filter(models.Customer.id == order.customer_id).first()
     if not customer: raise HTTPException(status_code=404, detail="Customer not found")
@@ -31,7 +32,7 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
     db.refresh(new_order)
     return new_order
 
-@router.get("", response_model=List[schemas.ProductResponse])
+@router.get("", response_model=List[schemas.OrderResponse])
 def get_orders(db: Session = Depends(get_db)):
     return db.query(models.Order).all()
 

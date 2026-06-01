@@ -6,7 +6,7 @@ from database import get_db
 
 router = APIRouter()
 
-@router.post("", response_model=schemas.ProductResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=schemas.CustomerResponse, status_code=status.HTTP_201_CREATED)
 def create_customer(customer: schemas.CustomerCreate, db: Session = Depends(get_db)):
     if db.query(models.Customer).filter(models.Customer.email == customer.email).first():
         raise HTTPException(status_code=400, detail="Email must be unique")
@@ -16,7 +16,7 @@ def create_customer(customer: schemas.CustomerCreate, db: Session = Depends(get_
     db.refresh(new_customer)
     return new_customer
 
-@router.get("", response_model=List[schemas.ProductResponse])
+@router.get("", response_model=List[schemas.CustomerResponse])
 def get_customers(db: Session = Depends(get_db)):
     return db.query(models.Customer).all()
 
@@ -24,6 +24,23 @@ def get_customers(db: Session = Depends(get_db)):
 def get_customer(id: int, db: Session = Depends(get_db)):
     customer = db.query(models.Customer).filter(models.Customer.id == id).first()
     if not customer: raise HTTPException(status_code=404, detail="Customer not found")
+    return customer
+
+@router.put("/{id}", response_model=schemas.CustomerResponse)
+def update_customer(id: int, req: schemas.CustomerCreate, db: Session = Depends(get_db)):
+    customer = db.query(models.Customer).filter(models.Customer.id == id).first()
+    if not customer: 
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    existing = db.query(models.Customer).filter(models.Customer.email == req.email, models.Customer.id != id).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already in use by another customer")
+
+    for key, value in req.model_dump().items():
+        setattr(customer, key, value)
+    
+    db.commit()
+    db.refresh(customer)
     return customer
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
