@@ -48,7 +48,11 @@ export default function Orders() {
   };
 
   // Helper functions to map IDs to actual names for the UI
-  const getCustomerName = (id) => customers.find(c => c.id === id)?.full_name || 'Deleted Customer';
+  const getCustomerDetails = (id) => {
+    const c = customers.find(c => c.id === id);
+    if (!c) return 'Deleted Customer';
+    return `CUST-${c.id.toString().padStart(4, '0')} - ${c.full_name}`;
+  };
   const getProductName = (id) => products.find(p => p.id === id)?.name || 'Deleted Product';
 
   if (isLoading) return <div className="p-8 text-center text-gray-500 animate-pulse">Loading orders...</div>;
@@ -82,7 +86,7 @@ export default function Orders() {
                 orders.map((o) => (
                   <tr key={o.id} className="hover:bg-purple-50/50 transition-colors">
                     <td className="px-6 py-4 font-mono text-sm font-bold text-gray-500">#{o.id}</td>
-                    <td className="px-6 py-4 font-bold text-gray-900">{getCustomerName(o.customer_id)}</td>
+                    <td className="px-6 py-4 font-bold text-gray-900">{getCustomerDetails(o.customer_id)}</td>
                     <td className="px-6 py-4 text-gray-700">{getProductName(o.product_id)}</td>
                     <td className="px-6 py-4 font-bold text-gray-700">{o.quantity}</td>
                     <td className="px-6 py-4 font-bold text-green-700">${o.total_amount.toFixed(2)}</td>

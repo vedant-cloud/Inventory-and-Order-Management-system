@@ -62,7 +62,8 @@ export default function Customers() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-600 font-bold">
-                <th className="px-6 py-4">Full Name</th>
+                <th className="px-6 py-4">Cust ID</th> {/* <--- NEW COLUMN */}
+                <th className="px-6 py-4">Name</th>
                 <th className="px-6 py-4">Email</th>
                 <th className="px-6 py-4">Phone</th>
                 <th className="px-6 py-4 text-right">Actions</th>
@@ -70,10 +71,14 @@ export default function Customers() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {customers.length === 0 ? (
-                <tr><td colSpan="4" className="px-6 py-12 text-center text-gray-500">No customers found. Add your first customer!</td></tr>
+                <tr><td colSpan="5" className="px-6 py-12 text-center text-gray-500">No customers found. Add your first customer!</td></tr>
               ) : (
                 customers.map((c) => (
                   <tr key={c.id} className="hover:bg-blue-50/50 transition-colors">
+                    {/* NEW DATA CELL: Formats integer 1 to "CUST-0001" */}
+                    <td className="px-6 py-4 font-mono text-sm font-bold text-gray-500 bg-gray-50/30">
+                      CUST-{c.id.toString().padStart(4, '0')}
+                    </td>
                     <td className="px-6 py-4 font-bold text-gray-900">{c.full_name}</td>
                     <td className="px-6 py-4 text-gray-600">{c.email}</td>
                     <td className="px-6 py-4 text-gray-600">{c.phone_number}</td>

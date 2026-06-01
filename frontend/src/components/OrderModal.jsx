@@ -39,7 +39,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, customers, produ
             >
               <option value="" disabled>-- Choose a customer --</option>
               {customers.map(c => (
-                <option key={c.id} value={c.id}>{c.full_name} ({c.email})</option>
+                <option key={c.id} value={c.id}>CUST-{c.id.toString().padStart(4, '0')} - {c.full_name} ({c.email})</option>
               ))}
             </select>
           </div>

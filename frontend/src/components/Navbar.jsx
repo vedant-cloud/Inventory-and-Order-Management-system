@@ -14,7 +14,7 @@ export default function Navbar() {
     <nav className="bg-white shadow-sm border-b px-6 py-4 mb-8 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <h1 className="text-xl font-bold text-blue-600 tracking-wide">
-          InventoryManager Pro
+          Inventory Manager
         </h1>
         <div className="flex space-x-6">
           <Link to="/" className={getLinkClass('/')}>Dashboard</Link>
