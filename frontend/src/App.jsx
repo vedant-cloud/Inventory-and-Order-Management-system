@@ -4,6 +4,8 @@ import Navbar from './components/Navbar.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Products from './pages/Products.jsx';
 import Customers from './pages/Customers.jsx';
+import Orders from './pages/Orders.jsx';
+
 function App() {
   return (
     <ToastProvider>
@@ -14,7 +16,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/products" element={<Products />} />
             <Route path="/customers" element={<Customers />} />
-            <Route path="/orders" element={<h2 className="text-3xl font-bold">Orders (Coming Soon)</h2>} />
+            <Route path="/orders" element={<Orders />} />
           </Routes>
         </main>
       </div>
